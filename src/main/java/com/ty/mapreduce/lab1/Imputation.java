@@ -3,6 +3,7 @@ package com.ty.mapreduce.lab1;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -29,7 +30,7 @@ public class Imputation {
 
         job.setMapOutputKeyClass(Location.class);
         job.setMapOutputValueClass(Text.class);
-        job.setOutputKeyClass(Text.class);
+        job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
 
         FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Filter"));
@@ -49,7 +50,8 @@ public class Imputation {
             String userNation = splits[9];
             String longitude = splits[1];
             String latitude = splits[2];
-            String altitude = splits[3];
+//            String altitude = splits[3];
+//            String rating = splits[6];
             // 先处理 userIncome
             Map<String, List<Double>> careerToIncome = nationAndCareerToIncome.getOrDefault(userNation, new ConcurrentHashMap<>());
             List<Double> incomeList = careerToIncome.getOrDefault(userCareer, new ArrayList<>());
@@ -80,7 +82,9 @@ public class Imputation {
             careerToIncome.put(userCareer, incomeList);
             nationAndCareerToIncome.put(userNation, careerToIncome);
             // 处理 rating
-
+            // 默认值填充
+            if ("?".equals(splits[6]))
+                splits[6] = "50.00";
             // 保证排序性
             outputKey.setLatitude(Double.parseDouble(latitude));
             outputKey.setLongitude(Double.parseDouble(longitude));
@@ -93,10 +97,13 @@ public class Imputation {
         }
     }
 
-    public static class imputationReducer extends Reducer<Location, Text, Text, Text> {
+    public static class imputationReducer extends Reducer<Location, Text, NullWritable, Text> {
         @Override
         protected void reduce(Location key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-
+            // 直接输出即可
+            for (Text value : values) {
+                context.write(NullWritable.get(), value);
+            }
         }
     }
 }

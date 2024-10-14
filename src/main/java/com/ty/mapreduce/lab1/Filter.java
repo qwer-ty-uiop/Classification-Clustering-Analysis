@@ -42,14 +42,6 @@ public class Filter {
     public static class FilterMapper extends Mapper<LongWritable, Text, Location, Text> {
         // rating 范围 [min, max]
         private static final double min = 0, max = 100;
-        // 目标数据格式
-        private static final DateTimeFormatter targetFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        // 数据格式集合
-        private static final DateTimeFormatter[] formatters = new DateTimeFormatter[]{
-                DateTimeFormatter.ofPattern("yyyy-MM-dd"),
-                DateTimeFormatter.ofPattern("yyyy/MM/dd"),
-                DateTimeFormatter.ofPattern("MMMM d,yyyy", Locale.ENGLISH)
-        };
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
@@ -79,6 +71,19 @@ public class Filter {
             context.write(location, outputValue);
         }
 
+        // 目标数据格式
+        private static final DateTimeFormatter targetFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // 数据格式集合
+        private static final DateTimeFormatter[] formatters = new DateTimeFormatter[]{
+                DateTimeFormatter.ofPattern("yyyy-MM-dd"),
+                DateTimeFormatter.ofPattern("yyyy/MM/dd"),
+                DateTimeFormatter.ofPattern("MMMM d,yyyy", Locale.ENGLISH)
+        };
+
+        /**
+         * @param dateString 需要转换格式的日期
+         * @return 转换格式后的日期
+         */
         private String changeDateFormat(String dateString) {
             LocalDate date = null;
             for (DateTimeFormatter formatter : formatters) {
