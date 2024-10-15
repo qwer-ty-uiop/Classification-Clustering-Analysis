@@ -18,9 +18,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Imputation {
+    private static final int K = 5;
     // 国家->职业->工资
     private static final Map<String, Map<String, List<Double>>> nationAndCareerToIncome = new ConcurrentHashMap<>();
-
+    private static final KNN knn = new KNN(K);
 
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
         Configuration conf = new Configuration();
@@ -34,11 +35,11 @@ public class Imputation {
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
 
-        FileInputFormat.setInputPaths(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+//        FileInputFormat.setInputPaths(job, new Path(args[0]));
+//        FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-//        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Filter"));
-//        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Done"));
+        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Filter"));
+        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Done"));
 
         System.out.println("执行结果: " + (job.waitForCompletion(true) ? "成功" : "失败"));
     }
@@ -55,7 +56,7 @@ public class Imputation {
             String longitude = splits[1];
             String latitude = splits[2];
             String altitude = splits[3];
-//            String rating = splits[6];
+            String rating = splits[6];
             // 先处理 userIncome
             Map<String, List<Double>> careerToIncome = nationAndCareerToIncome.getOrDefault(userNation, new ConcurrentHashMap<>());
             List<Double> incomeList = careerToIncome.getOrDefault(userCareer, new ArrayList<>());
@@ -86,10 +87,12 @@ public class Imputation {
             careerToIncome.put(userCareer, incomeList);
             nationAndCareerToIncome.put(userNation, careerToIncome);
 
-            // 处理 rating
-            // 默认值填充
-            // if ("?".equals(splits[6]))
-            //     splits[6] = "50.00";
+            // 处理 rating,KNN并取平均值 / 默认值填充
+            if (!"?".equals(rating)) {
+                // 预处理有值的结点
+                double[] point = {Double.parseDouble(longitude), Double.parseDouble(latitude), Double.parseDouble(altitude)};
+                knn.addPoint(point, Double.parseDouble(rating));
+            }
 
             // 保证排序性
             outputKey.setLatitude(Double.parseDouble(latitude));
@@ -106,8 +109,21 @@ public class Imputation {
     public static class imputationReducer extends Reducer<Location, Text, NullWritable, Text> {
         @Override
         protected void reduce(Location key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-            // 直接输出即可
+            // 处理 KNN 的数据，缺失值填充
             for (Text value : values) {
+                String[] splits = value.toString().split("\\|");
+                String longitude = splits[1];
+                String latitude = splits[2];
+                String altitude = splits[3];
+                String rating = splits[6];
+                if ("?".equals(rating)) {
+                    double[] point = {Double.parseDouble(longitude), Double.parseDouble(latitude), Double.parseDouble(altitude)};
+                    splits[6] = String.format("%.2f", knn.classify(point));
+                    StringBuilder sb = new StringBuilder();
+                    for (String s : splits)
+                        sb.append(s).append("\\|");
+                    value.set(sb.toString());
+                }
                 context.write(NullWritable.get(), value);
             }
         }
