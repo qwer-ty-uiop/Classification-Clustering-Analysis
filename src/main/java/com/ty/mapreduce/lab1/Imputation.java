@@ -21,6 +21,7 @@ public class Imputation {
     // 国家->职业->工资
     private static final Map<String, Map<String, List<Double>>> nationAndCareerToIncome = new ConcurrentHashMap<>();
 
+
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf);
@@ -33,8 +34,11 @@ public class Imputation {
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
 
-        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Filter"));
-        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Done"));
+        FileInputFormat.setInputPaths(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+//        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Filter"));
+//        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Done"));
 
         System.out.println("执行结果: " + (job.waitForCompletion(true) ? "成功" : "失败"));
     }
@@ -50,7 +54,7 @@ public class Imputation {
             String userNation = splits[9];
             String longitude = splits[1];
             String latitude = splits[2];
-//            String altitude = splits[3];
+            String altitude = splits[3];
 //            String rating = splits[6];
             // 先处理 userIncome
             Map<String, List<Double>> careerToIncome = nationAndCareerToIncome.getOrDefault(userNation, new ConcurrentHashMap<>());
@@ -81,10 +85,12 @@ public class Imputation {
             // 已经有数据添加数据到缓存
             careerToIncome.put(userCareer, incomeList);
             nationAndCareerToIncome.put(userNation, careerToIncome);
+
             // 处理 rating
             // 默认值填充
-            if ("?".equals(splits[6]))
-                splits[6] = "50.00";
+            // if ("?".equals(splits[6]))
+            //     splits[6] = "50.00";
+
             // 保证排序性
             outputKey.setLatitude(Double.parseDouble(latitude));
             outputKey.setLongitude(Double.parseDouble(longitude));

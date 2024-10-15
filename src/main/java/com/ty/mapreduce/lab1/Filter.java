@@ -29,11 +29,11 @@ public class Filter {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(NullWritable.class);
 
-        // FileInputFormat.setInputPaths(job, new Path(args[0]));
-        // FileOutputFormat.setOutputPath(job, new Path(args[1]));
+         FileInputFormat.setInputPaths(job, new Path(args[0]));
+         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Sample\\part-r-00000"));
-        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Filter"));
+//        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Sample\\part-r-00000"));
+//        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Filter"));
 
         System.out.println("执行结果: " + (job.waitForCompletion(true) ? "成功" : "失败"));
 

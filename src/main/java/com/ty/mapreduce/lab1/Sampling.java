@@ -28,11 +28,11 @@ public class Sampling {
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
 
-//        FileInputFormat.setInputPaths(job, new Path(args[0]));
-//        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        FileInputFormat.setInputPaths(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\data.txt"));
-        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Sample"));
+//        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\data.txt"));
+//        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\D_Sample"));
 
         System.out.println(job.waitForCompletion(true) ? 0 : 1);
     }
