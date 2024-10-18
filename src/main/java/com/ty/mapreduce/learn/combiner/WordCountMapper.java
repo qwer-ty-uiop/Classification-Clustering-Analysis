@@ -1,4 +1,4 @@
-package com.ty.mapreduce.combiner;
+package com.ty.mapreduce.learn.combiner;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;

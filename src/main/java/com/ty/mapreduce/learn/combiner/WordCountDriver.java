@@ -1,4 +1,4 @@
-package com.ty.mapreduce.wordcount;
+package com.ty.mapreduce.learn.combiner;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -23,9 +23,12 @@ public class WordCountDriver {
 //        5.设置最终输出的key value类型
         instance.setOutputKeyClass(Text.class);
         instance.setOutputValueClass(IntWritable.class);
+//        (*)设置combiner,combiner就是一种reducer，可以复用
+        instance.setCombinerClass(WordCountReducer.class);
+//        instance.setNumReduceTasks(0);combiner在shuffle阶段，如果没有reduce阶段，则不会执行combiner
 //        6.设置输入/输出路径
-        FileInputFormat.setInputPaths(instance, new Path(args[0]));
-        FileOutputFormat.setOutputPath(instance, new Path(args[1]));
+        FileInputFormat.setInputPaths(instance, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\hellp.txt"));
+        FileOutputFormat.setOutputPath(instance, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\output4"));
 //        7.提交job
         boolean b = instance.waitForCompletion(true);// 参数：是否监控并打印job的信息
         System.exit(b ? 0 : 1);

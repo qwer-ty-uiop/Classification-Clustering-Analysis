@@ -1,4 +1,4 @@
-package com.ty.mapreduce.outputformat;
+package com.ty.mapreduce.learn.outputformat;
 
 
 import org.apache.hadoop.conf.Configuration;

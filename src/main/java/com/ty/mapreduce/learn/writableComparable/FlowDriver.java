@@ -1,4 +1,4 @@
-package com.ty.mapreduce.writableComparable;
+package com.ty.mapreduce.learn.writableComparable;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;

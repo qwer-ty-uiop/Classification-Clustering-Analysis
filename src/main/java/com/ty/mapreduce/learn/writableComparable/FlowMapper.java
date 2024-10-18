@@ -1,4 +1,4 @@
-package com.ty.mapreduce.writableComparable;
+package com.ty.mapreduce.learn.writableComparable;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;

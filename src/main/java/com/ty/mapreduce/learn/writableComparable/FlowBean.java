@@ -1,6 +1,6 @@
-package com.ty.mapreduce.writable;
+package com.ty.mapreduce.learn.writableComparable;
 
-import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableComparable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -13,12 +13,17 @@ import java.io.IOException;
  * 4.重写toString方法
  */
 
-public class FlowBean implements Writable {
+public class FlowBean implements WritableComparable<FlowBean> {
+
 
     private long upFlow;
     private long downFlow;
     private long totalFlow;
 
+    @Override
+    public int compareTo(FlowBean o) {
+        return o.totalFlow == this.totalFlow ? Long.compare(this.upFlow, o.upFlow) : Long.compare(o.totalFlow, this.totalFlow);
+    }
 
     //    空参构造
     public FlowBean() {

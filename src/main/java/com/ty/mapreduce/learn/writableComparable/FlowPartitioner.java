@@ -1,6 +1,5 @@
-package com.ty.mapreduce.writableComparable;
+package com.ty.mapreduce.learn.writableComparable;
 
-import com.ty.mapreduce.writableComparable.FlowBean;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;
 

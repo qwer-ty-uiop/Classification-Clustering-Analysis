@@ -1,4 +1,4 @@
-package com.ty.mapreduce.writable;
+package com.ty.mapreduce.learn.writable;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
