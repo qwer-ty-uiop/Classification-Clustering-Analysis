@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class CentroidSample {
-    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
+public class CentroidInitializer {
+    public static void InitializeCentroid() throws IOException, InterruptedException, ClassNotFoundException {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf);
-        job.setJarByClass(CentroidSample.class);
+        job.setJarByClass(CentroidInitializer.class);
         job.setMapperClass(SampleMapper.class);
         job.setReducerClass(SampleReducer.class);
 
