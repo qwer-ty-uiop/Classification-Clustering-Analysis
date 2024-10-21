@@ -30,8 +30,6 @@ public class CentroidInitializer {
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
 
-//        FileInputFormat.setInputPaths(job, new Path(args[0]));
-//        FileOutputFormat.setOutputPath(job, new Path(args[1]));
         FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\聚类数据.txt"));
         FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\质心"));
 
@@ -55,10 +53,10 @@ public class CentroidInitializer {
 
     // reducer
     private static class SampleReducer extends Reducer<IntWritable, Text, NullWritable, Text> {
-        private List<String> centroids = new ArrayList<String>();
+        private final List<String> centroids = new ArrayList<>();
 
         @Override
-        protected void reduce(IntWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        protected void reduce(IntWritable key, Iterable<Text> values, Context context) {
             for (Text value : values) {
                 centroids.add(value.toString());
             }
