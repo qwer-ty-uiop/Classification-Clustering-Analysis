@@ -1,4 +1,4 @@
-package com.ty.mapreduce.lab2;
+package com.ty.mapreduce.lab2.kmeans;
 
 import java.util.ArrayList;
 import java.util.List;

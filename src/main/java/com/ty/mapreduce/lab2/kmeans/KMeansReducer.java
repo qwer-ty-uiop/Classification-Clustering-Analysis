@@ -1,4 +1,4 @@
-package com.ty.mapreduce.lab2;
+package com.ty.mapreduce.lab2.kmeans;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -7,7 +7,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 
 public class KMeansReducer extends Reducer<LongWritable, Text, LongWritable, Text> {
-
+    @Override
     public void reduce(LongWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
         double[] newCentroid = new double[KMeansClusterAnalysis.DIMENSION];
         int clusteringNum = 0;

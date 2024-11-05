@@ -1,4 +1,4 @@
-package com.ty.mapreduce.lab2;
+package com.ty.mapreduce.lab2.kmeans;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;

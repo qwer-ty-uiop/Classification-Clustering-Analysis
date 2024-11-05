@@ -1,4 +1,4 @@
-package com.ty.mapreduce.lab2;
+package com.ty.mapreduce.lab2.kmeans;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -13,7 +13,7 @@ import java.io.IOException;
 
 class KMeansClusterAnalysis {
 
-    public static final int maxIterations = 5;
+    public static final int maxIterations = 2;
     public static final int K = 5;
     public static final int DIMENSION = 20;
 
@@ -49,9 +49,8 @@ class KMeansClusterAnalysis {
 
             System.out.println(i + (job.waitForCompletion(true) ? " 成功" : " 失败"));
             // 删除输出路径
-            if (i < maxIterations) {
-                fs.delete(output, true);
-            }
+            fs.delete(output, true);
+
         }
 
         ClusteringClassify.classifyData(input, output, centroidsPath);
