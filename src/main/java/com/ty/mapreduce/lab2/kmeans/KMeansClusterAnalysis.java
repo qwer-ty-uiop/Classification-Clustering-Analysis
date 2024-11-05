@@ -20,9 +20,9 @@ class KMeansClusterAnalysis {
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
         Configuration conf = new Configuration();
 
-        Path centroidsPath = new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\质心\\part-r-00000");
-        Path input = new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\聚类数据.txt");
-        Path output = new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\output");
+        Path centroidsPath = new Path("D:\\learn\\大数据分析\\lab2\\output\\质心\\part-r-00000");
+        Path input = new Path("D:\\learn\\大数据分析\\lab2\\聚类数据.txt");
+        Path output = new Path("D:\\learn\\大数据分析\\lab2\\output\\聚类结果");
         // 处理输出文件
         FileSystem fs = FileSystem.get(conf);
         if (fs.exists(output)) {

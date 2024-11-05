@@ -18,7 +18,7 @@ public class KMeansMapper extends Mapper<LongWritable, Text, LongWritable, Text>
     @Override
     protected void setup(Mapper<LongWritable, Text, LongWritable, Text>.Context context) throws IOException {
         FileSystem fs = FileSystem.get(new Configuration());
-        FSDataInputStream open = fs.open(new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\质心\\part-r-00000"));
+        FSDataInputStream open = fs.open(new Path("D:\\learn\\大数据分析\\lab2\\output\\质心\\part-r-00000"));
         BufferedReader reader = new BufferedReader(new InputStreamReader(open));
         // 读取质心
         Clusters.getCentroids(reader, centroids);

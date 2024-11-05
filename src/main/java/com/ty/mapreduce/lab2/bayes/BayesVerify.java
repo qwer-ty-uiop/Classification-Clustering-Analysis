@@ -19,9 +19,11 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
-public class BayesPredict {
+public class BayesVerify {
     private static final double[][][] prob = new double[2][20][3]; // 条件概率
     private static final double[] prior = new double[2]; // 先验概率
+    private static long consistentNumber = 0;
+    private static long totalNumber = 0;
 
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException, ClassNotFoundException {
         Configuration conf = new Configuration();
@@ -43,21 +45,22 @@ public class BayesPredict {
         }
         Job job = Job.getInstance(conf);
         job.setJarByClass(BayesTrain.class);
-        job.setMapperClass(BayesPredictMapper.class);
-        job.setReducerClass(BayesPredictReducer.class);
+        job.setMapperClass(BayesVerifyMapper.class);
+        job.setReducerClass(BayesVerifyReducer.class);
         job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(NullWritable.class);
-        FileInputFormat.setInputPaths(job, new Path("D:\\learn\\大数据分析\\lab2\\测试数据.txt"));
-        FileOutputFormat.setOutputPath(job, new Path("D:\\learn\\大数据分析\\lab2\\output\\测试结果"));
+        FileInputFormat.setInputPaths(job, new Path("D:\\learn\\大数据分析\\lab2\\验证数据.txt"));
+        FileOutputFormat.setOutputPath(job, new Path("D:\\learn\\大数据分析\\lab2\\output\\验证结果"));
         System.out.println(job.waitForCompletion(true) ? "成功" : "失败");
     }
 
     // 分割数据，用于计算其是各个种类的概率，取概率最大的种类作为其种类
-    private static class BayesPredictMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
+    private static class BayesVerifyMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
         @Override
         protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, LongWritable, Text>.Context context) throws IOException, InterruptedException {
+            totalNumber++; // 统计总数
             // 特征值
             String[] features = value.toString().split(",");
             double[] probability = new double[2];
@@ -65,7 +68,7 @@ public class BayesPredict {
             for (int i = 0; i < 2; i++) {
                 // 算P(Y=y|X=x)
                 probability[i] = prior[i];
-                for (int j = 0; j < features.length; j++) {
+                for (int j = 0; j < 20; j++) {
                     double val = Double.parseDouble(features[j]);
                     if (val < 0) {
                         probability[i] *= prob[i][j][0];
@@ -77,15 +80,23 @@ public class BayesPredict {
                 }
             }
             String label = probability[0] > probability[1] ? "0" : "1";
-            context.write(key, new Text(label));
+            context.write(key, new Text(label + "-" + features[20]));
+            // 统计验证结果正确的数量
+            consistentNumber += label.equals(features[20]) ? 1 : 0;
         }
     }
 
-    private static class BayesPredictReducer extends Reducer<LongWritable, Text, Text, NullWritable> {
+    private static class BayesVerifyReducer extends Reducer<LongWritable, Text, Text, NullWritable> {
         @Override
         protected void reduce(LongWritable key, Iterable<Text> values, Reducer<LongWritable, Text, Text, NullWritable>.Context context) throws IOException, InterruptedException {
             for (Text value : values)
                 context.write(new Text(value.toString()), NullWritable.get());
+        }
+
+        @Override
+        protected void cleanup(Reducer<LongWritable, Text, Text, NullWritable>.Context context) throws IOException, InterruptedException {
+            double accuracy = (double) consistentNumber / totalNumber;
+            context.write(new Text("accuracy=" + accuracy), NullWritable.get());
         }
     }
 }

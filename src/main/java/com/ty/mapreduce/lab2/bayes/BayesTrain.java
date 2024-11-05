@@ -1,6 +1,7 @@
 package com.ty.mapreduce.lab2.bayes;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -26,8 +27,8 @@ public class BayesTrain {
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
-        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\训练数据.txt"));
-        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\训练结果"));
+        FileInputFormat.setInputPaths(job, new Path("D:\\learn\\大数据分析\\lab2\\训练数据.txt"));
+        FileOutputFormat.setOutputPath(job, new Path("D:\\learn\\大数据分析\\lab2\\output\\训练结果"));
         System.out.println(job.waitForCompletion(true) ? "成功" : "失败");
     }
 
@@ -55,23 +56,37 @@ public class BayesTrain {
 
     // 求先验概率、类别为x时特征分类为y条件概率（需要对每一维度分别求）
     private static class BayesTrainReducer extends Reducer<Text, Text, Text, Text> {
-        private static final String[][][] prob = new String[2][20][3];
+        private static final double[][][] condProbability = new double[2][20][3];
+        private static final double[] priorProbability = new double[2];
+
+        static {
+            priorProbability[0] = (double) count[0] / (count[0] + count[1]); // 先验概率
+            priorProbability[1] = (double) count[1] / (count[0] + count[1]); // 先验概率
+        }
 
         @Override
-        protected void reduce(Text key, Iterable<Text> values, Reducer<Text, Text, Text, Text>.Context context) throws IOException, InterruptedException {
+        protected void reduce(Text key, Iterable<Text> values, Reducer<Text, Text, Text, Text>.Context context) {
             String[] labels = key.toString().split("-");
             int category = Integer.parseInt(labels[0]); // 标签y
-            double probability = (double) count[category] / (count[category] + count[category ^ 1]); // 先验概率
             int feature = Integer.parseInt(labels[2]); // 具体维度Xi
             int label = Integer.parseInt(labels[1]); // 维度的分类xi
             // 求P(Xi=xi|Y=y) = numberOfXInThisCategory / count[category]
             int cnt = 0;
             for (Text val : values)
                 cnt++;
-            double condProbability = (double) cnt / count[category];
-            context.write(new Text(category + "-" + feature + "-" + label), new Text(probability + "-" + condProbability));
+            condProbability[category][feature][label] = (double) cnt / count[category];
         }
 
-
+        @Override
+        protected void cleanup(Reducer<Text, Text, Text, Text>.Context context) throws IOException, InterruptedException {
+            for (int i = 0; i < 2; i++) {
+                // 条件概率
+                for (int j = 0; j < 20; j++)
+                    for (int k = 0; k < 3; k++)
+                        context.write(new Text(i + "-" + j + "-" + k), new Text(condProbability[i][j][k] + ""));
+                // 先验概率
+                context.write(new Text("prior-" + i), new Text(priorProbability[i] + ""));
+            }
+        }
     }
 }
