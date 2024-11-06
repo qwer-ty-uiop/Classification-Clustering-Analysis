@@ -75,7 +75,7 @@ public class GaussBayesPredict {
                 }
             }
             String label = probability[0] > probability[1] ? "0" : "1";
-            context.write(key, new Text(label));
+            context.write(key, new Text(label + "-" + features[20]));
             consistentNumber += label.equals(features[20]) ? 1 : 0;
         }
     }
