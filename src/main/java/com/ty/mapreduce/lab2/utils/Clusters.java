@@ -1,9 +1,10 @@
 package com.ty.mapreduce.lab2.utils;
 
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 
 public class Clusters {
     /**
@@ -57,5 +58,28 @@ public class Clusters {
             features[i] = Double.parseDouble(featureStr[i]);
         }
         return features;
+    }
+
+    /**
+     * 处理新质心的输出，更新质心文件
+     *
+     * @param fs            job的文件系统
+     * @param output        输出路径
+     * @param centroidsPath 质心路径
+     * @throws IOException
+     */
+    public static void copyToCentroidFile(FileSystem fs, Path output, Path centroidsPath) throws IOException {
+        Path newCentroidPath = new Path(output, "part-r-00000");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(fs.open(newCentroidPath)));
+        fs.delete(centroidsPath, true);
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fs.create(centroidsPath, true)));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            line = line.split("\t")[1];
+            writer.write(line);
+            writer.newLine();
+        }
+        writer.close();
+        reader.close();
     }
 }

@@ -10,20 +10,23 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import java.io.IOException;
+import java.io.*;
+
+import static com.ty.mapreduce.lab2.utils.Clusters.copyToCentroidFile;
 
 class KMeansClusterAnalysis {
 
-    public static final int maxIterations = 2;
+    public static final int maxIterations = 3;
     public static final int K = 3;
     public static final int DIMENSION = 20;
 
+
+    private static final Path centroidsPath = new Path("D:\\learn\\大数据分析\\lab2\\output\\质心\\part-r-00000");
+    private static final Path input = new Path("D:\\learn\\大数据分析\\lab2\\聚类数据.txt");
+    private static final Path output = new Path("D:\\learn\\大数据分析\\lab2\\output\\聚类结果");
+
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
         Configuration conf = new Configuration();
-
-        Path centroidsPath = new Path("D:\\learn\\大数据分析\\lab2\\output\\质心\\part-r-00000");
-        Path input = new Path("D:\\learn\\大数据分析\\lab2\\聚类数据.txt");
-        Path output = new Path("D:\\learn\\大数据分析\\lab2\\output\\聚类结果");
         // 处理输出文件
         FileSystem fs = FileSystem.get(conf);
         if (fs.exists(output)) {
@@ -49,6 +52,7 @@ class KMeansClusterAnalysis {
             FileOutputFormat.setOutputPath(job, output);
 
             System.out.println(i + (job.waitForCompletion(true) ? " 成功" : " 失败"));
+            copyToCentroidFile(fs, output, centroidsPath);
             // 删除输出路径
             fs.delete(output, true);
 
@@ -57,4 +61,6 @@ class KMeansClusterAnalysis {
         ClusteringClassify.classifyData(input, output, centroidsPath);
 
     }
+
+
 }

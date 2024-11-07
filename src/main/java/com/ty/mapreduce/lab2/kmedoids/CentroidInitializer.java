@@ -30,8 +30,8 @@ public class CentroidInitializer {
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
 
-        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\聚类数据.txt"));
-        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\output\\质心(KMedoids)"));
+        FileInputFormat.setInputPaths(job, new Path("D:\\learn\\大数据分析\\lab2\\聚类数据.txt"));
+        FileOutputFormat.setOutputPath(job, new Path("D:\\learn\\大数据分析\\lab2\\output\\质心(KMedoids)"));
 
         System.out.println(job.waitForCompletion(true) ? "成功" : "失败");
 

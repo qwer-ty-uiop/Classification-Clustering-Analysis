@@ -13,11 +13,12 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import static com.ty.mapreduce.lab2.utils.Clusters.copyToCentroidFile;
 
 public class KMedoids {
 
@@ -25,9 +26,9 @@ public class KMedoids {
     public static final int K = 3;
     public static final int DIMENSION = 20;
 
-    private static final Path centroidsPath = new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\output\\质心(KMedoids)\\part-r-00000");
-    private static final Path input = new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\聚类数据.txt");
-    private static final Path output = new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\output\\聚类结果(KMedoids)");
+    private static final Path centroidsPath = new Path("D:\\learn\\大数据分析\\lab2\\output\\质心(KMedoids)\\part-r-00000");
+    private static final Path input = new Path("D:\\learn\\大数据分析\\lab2\\聚类数据.txt");
+    private static final Path output = new Path("D:\\learn\\大数据分析\\lab2\\output\\聚类结果(KMedoids)");
 
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
         Configuration conf = new Configuration();
@@ -52,8 +53,9 @@ public class KMedoids {
             FileInputFormat.setInputPaths(job, input);
             FileOutputFormat.setOutputPath(job, output);
             System.out.println(job.waitForCompletion(true) ? "成功" : "失败");
-            // 删除输出路径
 
+            copyToCentroidFile(fs, output, centroidsPath);
+            // 删除输出路径
             fs.delete(output, true);
         }
         // 根据质心进行聚类分析
@@ -62,6 +64,7 @@ public class KMedoids {
 
     private static class KMedoidsMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
         double[][] centroids = new double[K][DIMENSION];
+        private static final Random random = new Random();
 
         @Override
         protected void setup(Context context) throws IOException {
@@ -72,8 +75,10 @@ public class KMedoids {
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             double[] features = Clusters.parseFeatures(value);
+            // kmedoids的复杂度很高，执行速度太慢了，通过随机抽样来重新确定质心
             key.set(Clusters.findNearestCentroid(features, centroids)); // 聚类
-            context.write(key, value);
+            if (random.nextDouble() < 0.005)
+                context.write(key, value);
         }
     }
 
@@ -110,4 +115,5 @@ public class KMedoids {
             context.write(key, new Text(centroid));
         }
     }
+
 }

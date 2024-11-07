@@ -27,7 +27,7 @@ public class BayesPredict {
         Configuration conf = new Configuration();
         // 获取训练数据
         FileSystem fs = FileSystem.get(conf);
-        FSDataInputStream open = fs.open(new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\output\\训练结果\\part-r-00000"));
+        FSDataInputStream open = fs.open(new Path("D:\\learn\\大数据分析\\lab2\\output\\训练结果\\part-r-00000"));
         BufferedReader in = new BufferedReader(new InputStreamReader(open));
         String line;
         while ((line = in.readLine()) != null) {
@@ -49,8 +49,8 @@ public class BayesPredict {
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(NullWritable.class);
-        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\测试数据.txt"));
-        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\output\\测试结果"));
+        FileInputFormat.setInputPaths(job, new Path("D:\\learn\\大数据分析\\lab2\\测试数据.txt"));
+        FileOutputFormat.setOutputPath(job, new Path("D:\\learn\\大数据分析\\lab2\\output\\测试结果"));
         System.out.println(job.waitForCompletion(true) ? "成功" : "失败");
     }
 

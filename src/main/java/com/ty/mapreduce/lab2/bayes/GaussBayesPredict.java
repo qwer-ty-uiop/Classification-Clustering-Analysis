@@ -55,8 +55,8 @@ public class GaussBayesPredict {
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(NullWritable.class);
-        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\验证数据.txt"));
-        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\output\\验证结果(Gauss)"));
+        FileInputFormat.setInputPaths(job, new Path("D:\\learn\\大数据分析\\lab2\\验证数据.txt"));
+        FileOutputFormat.setOutputPath(job, new Path("D:\\learn\\大数据分析\\lab2\\output\\验证结果(Gauss)"));
         System.out.println(job.waitForCompletion(true) ? "成功" : "失败");
     }
 

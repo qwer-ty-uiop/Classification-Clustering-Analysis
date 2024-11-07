@@ -59,7 +59,7 @@ public class ClusteringClassify {
             double[] features = Clusters.parseFeatures(value);
             // 将向量分类，并保持顺序不变
             int nearestCentroid = Clusters.findNearestCentroid(features, centroids);
-            value.set(nearestCentroid + "\t" + value);
+            value.set(nearestCentroid + "");
             context.write(key, value);
         }
     }
