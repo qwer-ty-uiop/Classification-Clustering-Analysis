@@ -1,4 +1,4 @@
-package com.ty.mapreduce.lab2.kmeans;
+package com.ty.mapreduce.lab2.utils;
 
 import org.apache.hadoop.io.Text;
 
@@ -13,9 +13,9 @@ public class Clusters {
      * @param centroids 用于存质心各个纬度数据的数组
      */
     public static void getCentroids(BufferedReader reader, double[][] centroids) throws IOException {
-        for (int i = 0; i < KMeansClusterAnalysis.K; i++) {
+        for (int i = 0; i < 3; i++) {
             String[] line = reader.readLine().split(",");
-            for (int j = 0; j < KMeansClusterAnalysis.DIMENSION; j++) {
+            for (int j = 0; j < 20; j++) {
                 centroids[i][j] = Double.parseDouble(line[j]);
             }
         }
@@ -31,9 +31,9 @@ public class Clusters {
     public static int findNearestCentroid(double[] features, double[][] centroids) {
         int nearestCentroid = 0;
         double minDistance = Double.MAX_VALUE;
-        for (int i = 0; i < KMeansClusterAnalysis.K; i++) {
+        for (int i = 0; i < 3; i++) {
             double distance = 0;
-            for (int j = 0; j < KMeansClusterAnalysis.DIMENSION; j++) {
+            for (int j = 0; j < 20; j++) {
                 distance += Math.pow(features[j] - centroids[i][j], 2);
             }
             if (distance < minDistance) {

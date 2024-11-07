@@ -1,5 +1,6 @@
 package com.ty.mapreduce.lab2.kmeans;
 
+import com.ty.mapreduce.lab2.utils.Clusters;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;

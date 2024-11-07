@@ -1,5 +1,6 @@
 package com.ty.mapreduce.lab2.kmeans;
 
+import com.ty.mapreduce.lab2.utils.ClusteringClassify;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -14,7 +15,7 @@ import java.io.IOException;
 class KMeansClusterAnalysis {
 
     public static final int maxIterations = 2;
-    public static final int K = 5;
+    public static final int K = 3;
     public static final int DIMENSION = 20;
 
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {

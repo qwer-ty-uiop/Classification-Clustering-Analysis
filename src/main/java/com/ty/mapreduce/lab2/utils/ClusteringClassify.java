@@ -1,4 +1,4 @@
-package com.ty.mapreduce.lab2.kmeans;
+package com.ty.mapreduce.lab2.utils;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -19,6 +19,14 @@ import java.io.InputStreamReader;
 public class ClusteringClassify {
 
     private static Path centroidsPath;
+    public static int K = 3;
+    public static int DIMENSION = 20;
+
+    public static void classifyData(Path input, Path output, Path centroids, int K_, int DIMENSION_) throws IOException, InterruptedException, ClassNotFoundException {
+        K = K_;
+        DIMENSION = DIMENSION_;
+        classifyData(input, output, centroids);
+    }
 
     public static void classifyData(Path input, Path output, Path centroids) throws IOException, InterruptedException, ClassNotFoundException {
         Configuration conf = new Configuration();
@@ -37,7 +45,7 @@ public class ClusteringClassify {
     }
 
     private static class ClusteringClassifyMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
-        double[][] centroids = new double[KMeansClusterAnalysis.K][KMeansClusterAnalysis.DIMENSION];
+        double[][] centroids = new double[K][DIMENSION];
 
         @Override
         protected void setup(Mapper<LongWritable, Text, LongWritable, Text>.Context context) throws IOException {

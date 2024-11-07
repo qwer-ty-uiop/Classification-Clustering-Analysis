@@ -27,8 +27,8 @@ public class BayesTrain {
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
-        FileInputFormat.setInputPaths(job, new Path("D:\\learn\\大数据分析\\lab2\\训练数据.txt"));
-        FileOutputFormat.setOutputPath(job, new Path("D:\\learn\\大数据分析\\lab2\\output\\训练结果"));
+        FileInputFormat.setInputPaths(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\训练数据.txt"));
+        FileOutputFormat.setOutputPath(job, new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\output\\训练结果"));
         System.out.println(job.waitForCompletion(true) ? "成功" : "失败");
     }
 
