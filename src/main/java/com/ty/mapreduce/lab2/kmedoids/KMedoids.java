@@ -30,7 +30,6 @@ public class KMedoids {
     private static final Path output = new Path("E:\\360MoveData\\Users\\Ty\\Desktop\\output\\聚类结果(KMedoids)");
 
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
-        CentroidInitializer.InitializeCentroid();
         Configuration conf = new Configuration();
         // 处理输出文件
         FileSystem fs = FileSystem.get(conf);
@@ -40,6 +39,7 @@ public class KMedoids {
         if (fs.exists(centroidsPath.getParent())) {
             fs.delete(centroidsPath.getParent(), true);
         }
+        CentroidInitializer.InitializeCentroid();
         for (int i = 0; i < maxIterations; i++) {
             Job job = Job.getInstance(conf, "jobName=" + i);
             job.setJarByClass(KMedoids.class);
@@ -53,6 +53,7 @@ public class KMedoids {
             FileOutputFormat.setOutputPath(job, output);
             System.out.println(job.waitForCompletion(true) ? "成功" : "失败");
             // 删除输出路径
+
             fs.delete(output, true);
         }
         // 根据质心进行聚类分析
